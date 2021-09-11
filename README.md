@@ -1,6 +1,6 @@
 <h2 align="center">HWFI: Hybrid Warping Fusion for Video Frame Interpolation</h2>
 
-**<p align="center">[Paper](https://link.springer.com) |	[ArXiv](https://arxiv.org) | [Project page](http://yu-li.github.io)</p>**
+**<p align="center">[Paper](https://link.springer.com)  |  [ArXiv](https://arxiv.org)  |  [Demo Video](https://www.youtube.com/watch?v=L0xQ0lsz0mw)</p>**
 
 **<p align="center">[Ye Zhu](https://yu-li.github.io/), [Yu Li](https://yu-li.github.io/), [Ruoteng Li](https://liruoteng.github.io/), [Xintao Wang](https://xinntao.github.io/), [Yue Luo](https://github.com/lawy623), [Ying Shan](https://scholar.google.com/citations?user=4oXBp9UAAAAJ&hl=en)</p>**
 
