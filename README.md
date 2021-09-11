@@ -1,13 +1,15 @@
 <h2 align="center">HWFI: Hybrid Warping Fusion for Video Frame Interpolation</h2>
+**<p align="center">[Paper](https://link.springer.com) |	[ArXiv](https://arxiv.org) | [Project page](http://yu-li.github.io)</p>**
+**<p align="center">[Ye Zhu](https://yu-li.github.io/), [Yu Li](https://yu-li.github.io/), [Ruoteng Li](https://liruoteng.github.io/), [Xintao Wang](https://xinntao.github.io/), [Yue Luo](https://github.com/lawy623), [Ying Shan](https://scholar.google.com/citations?user=4oXBp9UAAAAJ&hl=en)</p>**
+
 <img height = '240' src ="./figs/slomo0.gif"/>
 <img height = '240' src ="./figs/slomo1.gif"/>
 
 **<p align="center">HWFI is a method for video frame interpolation. It can synthesize intermediate frame at any time between two video frames</p>**
 
-**<p align="center">HWFI 是一个通用视频插帧方法。可以预测两帧中间任意时刻的中间帧</p>**
+**<p align="center">HWFI 是一个通用视频插帧方法。可以预测两帧中间任意时刻的中间帧。</p>**
 
-**<p align="center">[Paper](https://link.springer.com) |	[ArXiv](https://arxiv.org) | [Project page](http://yu-li.github.io)</p>**
-**<p align="center">[Xintao Wang](https://xinntao.github.io/), [Yu Li](https://yu-li.github.io/), [Honglun Zhang](https://scholar.google.com/citations?hl=en&user=KjQLROoAAAAJ), [Ying Shan](https://scholar.google.com/citations?user=4oXBp9UAAAAJ&hl=en)</p>**
+
 
 ## Usage
 
