@@ -81,9 +81,12 @@ We also support multi-gpus training, such as 4 gpus:
 ```
 $ python -m torch.distributed.launch --nproc_per_node=4 train.py --model HWFI --dataset VIMEO --batch_size 8 --gpu_ids 0 1 2 3 --train_file vimeo_triplet/ --val_file vimeo_triple/ --name exp0 --epoch 100 --optimizer Adamax --lr 0.001 --lr_scheduler MultiStepLR --lr_milestones 40 80
 ```
-## Reference
-Optical Flow:
-[pytorch-PWCNet](https://github.com/sniklaus/pytorch-pwc)
 
-Video Interpolation:
-[DAIN](https://github.com/baowenbo/DAIN)  [SoftSplat](https://github.com/sniklaus/softmax-splatting)
+## Pre-trained weights
+- [x] HWFI.pt.tar (This model is trained on Vimeo90K and is used in our paper)
+- [x] HWFI_general.pt.tar  (This model is newly trained for general video frame interpolation)
+
+
+## Reference
+[pytorch-PWCNet](https://github.com/sniklaus/pytorch-pwc)
+[SoftSplat](https://github.com/sniklaus/softmax-splatting)
