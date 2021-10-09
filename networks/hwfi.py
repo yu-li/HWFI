@@ -103,7 +103,7 @@ class FlowNet(nn.Module):
         f0_1, f1_0 = torch.chunk(flow, 2, 0)
         return f0_1, f1_0
 
-    def load_weights(self, path='softsplat_utils/network-default.pytorch'):
+    def load_weights(self, path='third_party/network-default.pytorch'):
         self._model.load_state_dict(
             {strKey.replace('module', 'net'): tenWeight
              for strKey, tenWeight in torch.load(path).items()})
@@ -277,25 +277,24 @@ class GridNet(nn.Module):
 ten_grid = {}
 
 
-def backwarp(ten_input, ten_flow):
-    if str(ten_flow.size()) not in ten_grid:
+def backwarp(tenInput, tenFlow):
+    if str(tenFlow.size()) not in ten_grid:
         ten_hor = torch.linspace(-1.0, 1.0,
-                                 ten_flow.shape[3]).view(1, 1, 1,
-                                                         ten_flow.shape[3]).expand(ten_flow.shape[0], -1,
-                                                                                   ten_flow.shape[2], -1)
-        ten_ver = torch.linspace(-1.0, 1.0, ten_flow.shape[2]).view(1, 1, ten_flow.shape[2],
-                                                                    1).expand(ten_flow.shape[0], -1, -1,
-                                                                              ten_flow.shape[3])
+                                 tenFlow.shape[3]).view(1, 1, 1,
+                                                        tenFlow.shape[3]).expand(tenFlow.shape[0], -1, tenFlow.shape[2],
+                                                                                 -1)
+        ten_ver = torch.linspace(-1.0, 1.0, tenFlow.shape[2]).view(1, 1, tenFlow.shape[2],
+                                                                   1).expand(tenFlow.shape[0], -1, -1, tenFlow.shape[3])
 
-        ten_grid[str(ten_flow.size())] = torch.cat([ten_hor, ten_ver], 1).cuda()
+        ten_grid[str(tenFlow.size())] = torch.cat([ten_hor, ten_ver], 1).cuda()
 
-    ten_flow = torch.cat([
-        ten_flow[:, 0:1, :, :] / ((ten_input.shape[3] - 1.0) / 2.0), ten_flow[:, 1:2, :, :] /
-        ((ten_input.shape[2] - 1.0) / 2.0)
+    tenFlow = torch.cat([
+        tenFlow[:, 0:1, :, :] / ((tenInput.shape[3] - 1.0) / 2.0), tenFlow[:, 1:2, :, :] /
+        ((tenInput.shape[2] - 1.0) / 2.0)
     ], 1)
 
-    return F.grid_sample(input=ten_input,
-                         grid=(ten_grid[str(ten_flow.size())] + ten_flow).permute(0, 2, 3, 1),
+    return F.grid_sample(input=tenInput,
+                         grid=(ten_grid[str(tenFlow.size())] + tenFlow).permute(0, 2, 3, 1),
                          mode='bilinear',
                          padding_mode='zeros')
 
@@ -305,8 +304,8 @@ class Metric(nn.Module):
         super(Metric, self).__init__()
         self.alpha = nn.Parameter(-torch.ones(1, 1, 1, 1))
 
-    def forward(self, ten_first, ten_second, ten_flow):
-        return self.alpha * F.l1_loss(ten_first, backwarp(ten_second, ten_flow), reduction='none').mean(1, keepdim=True)
+    def forward(self, ten_first, ten_second, tenFlow):
+        return self.alpha * F.l1_loss(ten_first, backwarp(ten_second, tenFlow), reduction='none').mean(1, keepdim=True)
 
 
 class HWFI(nn.Module):
@@ -360,42 +359,36 @@ class HWFI(nn.Module):
         z0_s3 = upsample2d_as(z0_s2, f0_dict['s3'])
         z1_s3 = upsample2d_as(z1_s2, f0_dict['s3'])
 
-        f0 = softsplat.FunctionSoftsplat(ten_input=im0, ten_flow=f0_1_s1 * t, tenMetric=z0_s1, strType='softmax')
-        f1 = softsplat.FunctionSoftsplat(ten_input=im1,
-                                         ten_flow=f1_0_s1 * (1.0 - t),
-                                         tenMetric=z1_s1,
-                                         strType='softmax')
+        f0 = softsplat.FunctionSoftsplat(tenInput=im0, tenFlow=f0_1_s1 * t, tenMetric=z0_s1, strType='softmax')
+        f1 = softsplat.FunctionSoftsplat(tenInput=im1, tenFlow=f1_0_s1 * (1.0 - t), tenMetric=z1_s1, strType='softmax')
 
-        f0_dict['s1'] = softsplat.FunctionSoftsplat(ten_input=f0_dict['s1'],
-                                                    ten_flow=f0_1_s1 * t,
+        f0_dict['s1'] = softsplat.FunctionSoftsplat(tenInput=f0_dict['s1'],
+                                                    tenFlow=f0_1_s1 * t,
                                                     tenMetric=z0_s1,
                                                     strType='softmax')
-        f0_dict['s2'] = softsplat.FunctionSoftsplat(ten_input=f0_dict['s2'],
-                                                    ten_flow=f0_1_s2 * t,
+        f0_dict['s2'] = softsplat.FunctionSoftsplat(tenInput=f0_dict['s2'],
+                                                    tenFlow=f0_1_s2 * t,
                                                     tenMetric=z0_s2,
                                                     strType='softmax')
-        f0_dict['s3'] = softsplat.FunctionSoftsplat(ten_input=f0_dict['s3'],
-                                                    ten_flow=f0_1_s3 * t,
+        f0_dict['s3'] = softsplat.FunctionSoftsplat(tenInput=f0_dict['s3'],
+                                                    tenFlow=f0_1_s3 * t,
                                                     tenMetric=z0_s3,
                                                     strType='softmax')
-        f1_dict['s1'] = softsplat.FunctionSoftsplat(ten_input=f1_dict['s1'],
-                                                    ten_flow=f1_0_s1 * (1.0 - t),
+        f1_dict['s1'] = softsplat.FunctionSoftsplat(tenInput=f1_dict['s1'],
+                                                    tenFlow=f1_0_s1 * (1.0 - t),
                                                     tenMetric=z1_s1,
                                                     strType='softmax')
-        f1_dict['s2'] = softsplat.FunctionSoftsplat(ten_input=f1_dict['s2'],
-                                                    ten_flow=f1_0_s2 * (1.0 - t),
+        f1_dict['s2'] = softsplat.FunctionSoftsplat(tenInput=f1_dict['s2'],
+                                                    tenFlow=f1_0_s2 * (1.0 - t),
                                                     tenMetric=z1_s2,
                                                     strType='softmax')
-        f1_dict['s3'] = softsplat.FunctionSoftsplat(ten_input=f1_dict['s3'],
-                                                    ten_flow=f1_0_s3 * (1.0 - t),
+        f1_dict['s3'] = softsplat.FunctionSoftsplat(tenInput=f1_dict['s3'],
+                                                    tenFlow=f1_0_s3 * (1.0 - t),
                                                     tenMetric=z1_s3,
                                                     strType='softmax')
-        edge0_fwd = softsplat.FunctionSoftsplat(ten_input=edge0,
-                                                ten_flow=f0_1_s1 * t,
-                                                tenMetric=z0_s1,
-                                                strType='softmax')
-        edge1_fwd = softsplat.FunctionSoftsplat(ten_input=edge1,
-                                                ten_flow=f1_0_s1 * (1.0 - t),
+        edge0_fwd = softsplat.FunctionSoftsplat(tenInput=edge0, tenFlow=f0_1_s1 * t, tenMetric=z0_s1, strType='softmax')
+        edge1_fwd = softsplat.FunctionSoftsplat(tenInput=edge1,
+                                                tenFlow=f1_0_s1 * (1.0 - t),
                                                 tenMetric=z1_s1,
                                                 strType='softmax')
 
@@ -407,17 +400,17 @@ class HWFI(nn.Module):
         f1_0_s2_bw = (1 - t) * (1 - t) * f0_1_s2 - (1 - t) * t * f1_0_s2
         f1_0_s3_bw = (1 - t) * (1 - t) * f0_1_s3 - (1 - t) * t * f1_0_s3
 
-        f0_bw = backwarp(ten_input=im0, ten_flow=f0_1_s1_bw)
-        f1_bw = backwarp(ten_input=im1, ten_flow=f1_0_s1_bw)
-        edge0_bw = backwarp(ten_input=edge0, ten_flow=f0_1_s1_bw)
-        edge1_bw = backwarp(ten_input=edge1, ten_flow=f1_0_s1_bw)
-        f0_dict_bw['s1'] = backwarp(ten_input=f0_dict_bw['s1'], ten_flow=f0_1_s1_bw)
-        f0_dict_bw['s2'] = backwarp(ten_input=f0_dict_bw['s2'], ten_flow=f0_1_s2_bw)
-        f0_dict_bw['s3'] = backwarp(ten_input=f0_dict_bw['s3'], ten_flow=f0_1_s3_bw)
-        f1_dict_bw['s1'] = backwarp(ten_input=f1_dict_bw['s1'], ten_flow=f1_0_s1_bw)
-        f1_dict_bw['s2'] = backwarp(ten_input=f1_dict_bw['s2'], ten_flow=f1_0_s2_bw)
-        f1_dict_bw['s3'] = backwarp(ten_input=f1_dict_bw['s3'], ten_flow=f1_0_s3_bw)
-        res = self.grid_net(f0, f1, edge0_fwd, edge1_fwd, im0, im1, f0_dict, f1_dict, f0_bw, f1_bw, edge0_bw,
-                            edge1_bw, f0_dict_bw, f1_dict_bw)
+        f0_bw = backwarp(tenInput=im0, tenFlow=f0_1_s1_bw)
+        f1_bw = backwarp(tenInput=im1, tenFlow=f1_0_s1_bw)
+        edge0_bw = backwarp(tenInput=edge0, tenFlow=f0_1_s1_bw)
+        edge1_bw = backwarp(tenInput=edge1, tenFlow=f1_0_s1_bw)
+        f0_dict_bw['s1'] = backwarp(tenInput=f0_dict_bw['s1'], tenFlow=f0_1_s1_bw)
+        f0_dict_bw['s2'] = backwarp(tenInput=f0_dict_bw['s2'], tenFlow=f0_1_s2_bw)
+        f0_dict_bw['s3'] = backwarp(tenInput=f0_dict_bw['s3'], tenFlow=f0_1_s3_bw)
+        f1_dict_bw['s1'] = backwarp(tenInput=f1_dict_bw['s1'], tenFlow=f1_0_s1_bw)
+        f1_dict_bw['s2'] = backwarp(tenInput=f1_dict_bw['s2'], tenFlow=f1_0_s2_bw)
+        f1_dict_bw['s3'] = backwarp(tenInput=f1_dict_bw['s3'], tenFlow=f1_0_s3_bw)
+        res = self.grid_net(f0, f1, edge0_fwd, edge1_fwd, im0, im1, f0_dict, f1_dict, f0_bw, f1_bw, edge0_bw, edge1_bw,
+                            f0_dict_bw, f1_dict_bw)
 
         return res

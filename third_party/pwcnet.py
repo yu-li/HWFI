@@ -249,12 +249,6 @@ class PWCNet(torch.nn.Module):
 
         self.netRefiner = Refiner()
 
-        # self.load_state_dict({
-        #     strKey.replace('module', 'net'): tenWeight
-        #     for strKey, tenWeight in torch.load('softsplat_utils/network-default.pytorch').items()
-        # })
-
-        # print('load pretrained pwcnet')
 
     def forward(self, tenFirst, tenSecond):
         tenFirst = self.netExtractor(tenFirst)

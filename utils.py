@@ -34,6 +34,8 @@ class TimerBlock:
 
 
 def module_to_dict(module, exclude=None):
+    if exclude is None:
+        exclude = []
     return dict([(x, getattr(module, x)) for x in dir(module)
                  if isclass(getattr(module, x)) and x not in exclude and getattr(module, x) not in exclude])
 

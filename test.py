@@ -34,8 +34,8 @@ model.module.load_state_dict(state_dict, strict=False)
 model.eval()
 PATH = './examples/'
 with torch.no_grad():
-    im0 = cv2.imread(filename=PATH + '/im0.png', flags=-1)
-    im1 = cv2.imread(filename=PATH + '/im1.png', flags=-1)
+    im0 = cv2.imread(filename=PATH + '/I0.png', flags=-1)
+    im1 = cv2.imread(filename=PATH + '/I2.png', flags=-1)
     h, w, _ = im0.shape
     im0 = torch.FloatTensor(numpy.ascontiguousarray(im0.transpose(2, 0, 1).astype(numpy.float32) *
                                                    (1.0 / 255.0))).cuda().unsqueeze(0)
@@ -43,4 +43,4 @@ with torch.no_grad():
                                                    (1.0 / 255.0))).cuda().unsqueeze(0)
     pred = model(im0, im1, 0.5)
     pred = (pred[0].data.cpu().clamp(0.0, 1.0).numpy().transpose(1, 2, 0) * 255.0).astype(numpy.uint8)
-    cv2.imwrite(PATH + '/It_pred.png', pred)
+    cv2.imwrite(PATH + '/I1_pred.png', pred)
