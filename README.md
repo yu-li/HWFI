@@ -6,7 +6,7 @@
 
 **<p align="center">[Paper](https://arxiv.org)  |  [Demo Video](https://www.youtube.com/watch?v=L0xQ0lsz0mw)</p>**
 
-**<p align="center">Ye Zhu, [Yu Li](https://yu-li.github.io/), [Ruoteng Li](https://liruoteng.github.io/), [Xintao Wang](https://xinntao.github.io/), [Yue Luo](https://github.com/lawy623), [Ying Shan](https://scholar.google.com/citations?user=4oXBp9UAAAAJ&hl=en)</p>**
+**<p align="center">[Yu Li](https://yu-li.github.io/), [Ye Zhu](https://scholar.google.com/citations?user=qhp9rIMAAAAJ), [Ruoteng Li](https://liruoteng.github.io/), [Xintao Wang](https://xinntao.github.io/), [Yue Luo](https://github.com/lawy623), [Ying Shan](https://scholar.google.com/citations?user=4oXBp9UAAAAJ&hl=en)</p>**
 
 **<p align="center"> <img height = '240' src ="./figs/slomo0.gif"/></p>**
 **<p align="center"> 8X interpolation results using only two images</p>**
